@@ -1,5 +1,5 @@
 # Sqlite
-BaseDatos = 'sqlite:///final1bimaa22.db' 
+#BaseDatos = 'sqlite:///final1bimaa22.db' 
 
 # Mysql
 # para el uso de este dialecto en SqlAlchemy se crea varibles
