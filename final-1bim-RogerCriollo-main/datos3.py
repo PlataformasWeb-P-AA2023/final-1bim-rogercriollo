@@ -13,11 +13,11 @@ with Session() as session:
         print("/********************************************** 0 número de profesores, 5 profesores, 11, profesores ************************************************/")
         # Los cantones que tiene establecimientos con 0 número de profesores, 5 profesores, 11, profesores
         cant = session.query(Canton).join(Parroquia).join(Institucion).\
-                filter(or_(Institucion.numTeachers == 0, Institucion.numTeachers == 5, Institucion.numTeachers == 11)).all()
+                filter(or_(Institucion.num_doc == 0, Institucion.num_doc == 5, Institucion.num_doc == 11)).all()
         print(cant)
 
         print("/**************************************** Parroquia Pindal *************************************/")
         # Los establecimientos que pertenecen a la parroquia Pindal con estudiantes mayores o iguales a 21
         cant = session.query(Institucion).join(Parroquia).\
-                filter(Parroquia.parroquia == "PINDAL").filter(Institucion.nombreInstitucion >= 21).all()
+                filter(Parroquia.parroquia == "PINDAL").filter(Institucion.num_est >= 21).all()
         print(cant)
