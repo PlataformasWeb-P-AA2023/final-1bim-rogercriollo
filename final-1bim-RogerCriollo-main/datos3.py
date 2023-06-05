@@ -9,15 +9,29 @@ engine = create_engine(BaseDatos)
 
 Session = sessionmaker(bind=engine)
 
-with Session() as session:
-        print("/********************************************** 0 número de profesores, 5 profesores, 11, profesores ************************************************/")
-        # Los cantones que tiene establecimientos con 0 número de profesores, 5 profesores, 11, profesores
-        cant = session.query(Canton).join(Parroquia).join(Institucion).\
-                filter(or_(Institucion.num_doc == 0, Institucion.num_doc == 5, Institucion.num_doc == 11)).all()
-        print(cant)
+session = Session()
+# Query to find cantones with establishments having 0, 5, or 11 teachers
+consulta = session.query(Canton).select_from(Canton).join(Canton.parroquia).join(Parroquia.institucion).filter(
+    or_(Institucion.numTeachers.like("%0%"), Institucion.numTeachers.like("%5%"),
+        Institucion.numTeachers.like("%11%"))).distinct()
 
-        print("/**************************************** Parroquia Pindal *************************************/")
-        # Los establecimientos que pertenecen a la parroquia Pindal con estudiantes mayores o iguales a 21
-        cant = session.query(Institucion).join(Parroquia).\
-                filter(Parroquia.parroquia == "PINDAL").filter(Institucion.num_est >= 21).all()
-        print(cant)
+print("Los cantones que tienen establecimientos con 0, 5 o 11 profesores:\n")
+for canton in consulta:
+    print(canton.cod, canton.canton)
+    print("----------------------------------\n")
+
+print("------------------------------Fin de la  Consulta ---------------------------------------\n")
+
+
+
+
+# Query to find establishments in the parroquia "Pindal" with at least 21 students
+consulta2 = session.query(Institucion).join(Institucion.parroquia).filter(
+    and_(Parroquia.parroquia.like("%Pindal%"), Institucion.numStudents >= 21)).all()
+
+print("Los establecimientos que pertenecen a la parroquia Pindal con estudiantes mayores o iguales a 21:\n")
+for institucion in consulta2:
+    print(institucion.nombreInstitucion, institucion.numStudents)
+    print("----------------------------------\n")
+
+print("------------------------------Fin Consulta ---------------------------------------\n")

@@ -10,17 +10,28 @@ engine = create_engine(BaseDatos)
 Session = sessionmaker(bind=engine)
 
 
-with Session() as session:
-    print("/********************************* Jornada: Matutina y Vespertina *********************************/")
-    # Las parroquias que tienen establecimientos únicamente en la jornada "Matutina y Vespertina"
-    inst = session.query(Institucion).filter(Institucion.jornada=="Matutina y Vespertina" ).all()
 
-    for i in inst:
-        print(f"Institución: {i} - Jornada: {i.jornada}")
+Session = sessionmaker(bind=engine)
+session = Session()
 
+consulta1 = session.query(Parroquia).select_from(Parroquia).join(Parroquia.institucion).filter(Institucion.jornada.like("%Matutina y Vespertina%")).distinct()
 
-    print("/********************************** Numero Estudiantes: 448, 450, 451, 454, 458, 459 *************************************/")
-    # Los cantones que tiene establecimientos como número de estudiantes tales como: 448, 450, 451, 454, 458, 459
-    cant = session.query(Canton).join(Parroquia).join(Institucion).\
-            filter(or_(Institucion.num_est == 448, Institucion.num_est == 450, Institucion.num_est == 451, Institucion.num_est == 454, Institucion.num_est == 458, Institucion.num_est == 459)).all()
-    print(cant)
+print("Las parroquias que tienen establecimientos únicamente en la jornada Matutina y Vespertina:\n")
+for e in consulta1:
+    print(e.cod, e.parroquia)
+    print("----------------------------------\n")
+
+print("------------------------------Fin de la  Consulta ---------------------------------------\n")
+
+consulta2 = session.query(Canton).select_from(Canton).join(Canton.parroquia).join(Parroquia.institucion).filter(
+    or_(Institucion.numStudents.like("%448%"),Institucion.numStudents.like("%450%"),
+        Institucion.numStudents.like("%451%"),Institucion.numStudents.like("%454%"),
+        Institucion.numStudents.like("%458%"),Institucion.numStudents.like("%459%"))).distinct()
+
+print("Los cantones que tiene establecimientos como número de estudiantes tales como: 448, 450, 451, 454, 458, 459:\n")
+for e in consulta2:
+    print(e.cod, e.canton)
+    print("----------------------------------\n")
+
+print("------------------------------Fin de la  Consulta ---------------------------------------\n")
+
